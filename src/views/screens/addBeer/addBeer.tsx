@@ -1,0 +1,204 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import { Picker } from '@react-native-picker/picker'; // npm install @react-native-picker/picker
+import { useNavigation } from '@react-navigation/native';
+
+export default function AddBeerScreen() {
+  const navigation = useNavigation();
+
+  const [name, setName] = useState('');
+  const [producer, setProducer] = useState('');
+  const [type, setType] = useState('');
+  const [year, setYear] = useState('');
+
+  const wineTypes = ['Tinto', 'Branco', 'Rosé', 'Espumante', 'Sobremesa'];
+
+  const isFormValid = name && producer && type && year;
+
+  const handleNext = () => {
+    if (!isFormValid) {
+      Alert.alert('Preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    // Aqui você pode navegar para a próxima etapa ou salvar dados no contexto
+    Alert.alert('Tudo certo!', 'Pronto para ir para a etapa 2.');
+  };
+
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Etapas */}
+      <View style={styles.steps}>
+        <View style={styles.stepConnector} />
+
+        {/* Etapa 1 (ativa) */}
+        <View style={styles.step}>
+          <View style={[styles.stepCircle, styles.activeStepCircle]}>
+            <Text style={[styles.stepText, styles.activeStepText]}>1</Text>
+          </View>
+          <Text style={styles.stepLabel}>Básico</Text>
+        </View>
+
+        {/* Etapa 2 (inativa) */}
+        <View style={styles.step}>
+          <View style={[styles.stepCircle, styles.inactiveStepCircle]}>
+            <Text style={[styles.stepText, styles.inactiveStepText]}>2</Text>
+          </View>
+          <Text style={styles.stepLabel}>Origem</Text>
+        </View>
+      </View>
+
+
+
+      <Text style={styles.sectionTitle}>Informações básicas</Text>
+
+      <TextInput
+        placeholder="Nome do vinho*"
+        style={styles.input}
+        value={name}
+        onChangeText={setName}
+      />
+
+      <TextInput
+        placeholder="Produtor*"
+        style={styles.input}
+        value={producer}
+        onChangeText={setProducer}
+      />
+
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={type}
+          onValueChange={(itemValue) => setType(itemValue)}
+        >
+          <Picker.Item label="Selecione um tipo" value="" />
+          {wineTypes.map((w) => (
+            <Picker.Item key={w} label={w} value={w} />
+          ))}
+        </Picker>
+      </View>
+
+      <TextInput
+        placeholder="Ano/Safra*"
+        style={styles.input}
+        keyboardType="numeric"
+        value={year}
+        onChangeText={setYear}
+      />
+
+      <TouchableOpacity
+        style={[styles.button, !isFormValid && styles.disabledButton]}
+        onPress={handleNext}
+        disabled={!isFormValid}
+      >
+        <Text style={styles.buttonText}>Próximo</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  content: {
+    padding: 16,
+    paddingBottom: 40,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#800020',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 12,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    padding: 12,
+    marginBottom: 16,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    marginBottom: 16,
+  },
+  button: {
+    backgroundColor: '#800020',
+    padding: 14,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  disabledButton: {
+    backgroundColor: '#ccc',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
+  // Etapas (Stepper)
+  steps: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingHorizontal: 32,
+    position: 'relative',
+  },
+  stepConnector: {
+    position: 'absolute',
+    top: 18, // alinhamento visual com o centro dos círculos
+    left: 32,
+    right: 32,
+    height: 2,
+    backgroundColor: '#ccc',
+    zIndex: -1,
+  },
+  step: {
+    alignItems: 'center',
+  },
+  stepCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  stepNumber: {
+    fontWeight: 'bold',
+  },
+  activeStepCircle: {
+    backgroundColor: '#800020',
+  },
+  inactiveStepCircle: {
+    backgroundColor: '#E0E0E0',
+  },
+  activeStepText: {
+    color: '#fff',
+  },
+  inactiveStepText: {
+    color: '#444',
+  },
+  stepLabel: {
+    fontSize: 12,
+    color: '#444',
+  },
+});
+
