@@ -28,8 +28,6 @@ Bem-vindo ao **App-Vinho**, um aplicativo pessoal para **gerenciar sua coleção
 
 ## 📸 Screenshots
 
-## 📸 Screenshots
-
 | Tela Inicial | Etapa 1 | Etapa 2 | Detalhes |
 |--------------|---------|---------|----------|
 | ![](./Frontend/assets/home.jpg) | ![](./Frontend/assets/Step1.jpg) | ![](./Frontend/assets/Step2.jpg) | ![](./Frontend/assets/details.jpg) |
