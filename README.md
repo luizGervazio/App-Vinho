@@ -28,11 +28,12 @@ Bem-vindo ao **App-Vinho**, um aplicativo pessoal para **gerenciar sua coleção
 
 ## 📸 Screenshots
 
-| Tela Inicial | Cadastro de Vinho | Detalhes |
-|--------------|-------------------|----------|
-| ![](./screenshots/home.png) | ![](./screenshots/add.png) | ![](./screenshots/details.png) |
+## 📸 Screenshots
 
-> 💡 Crie uma pasta `screenshots/` na raiz do projeto e coloque suas imagens com esses nomes: `home.png`, `add.png`, `details.png`.
+| Tela Inicial | Etapa 1 | Etapa 2 | Detalhes |
+|--------------|---------|---------|----------|
+| ![](./Frontend/assets/home.jpg) | ![](./Frontend/assets/Step1.jpg) | ![](./Frontend/assets/Step2.jpg) | ![](./Frontend/assets/details.jpg) |
+
 
 ---
 
