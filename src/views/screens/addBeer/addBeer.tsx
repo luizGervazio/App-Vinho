@@ -8,11 +8,12 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // npm install @react-native-picker/picker
+import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 
 export default function AddBeerScreen() {
   const navigation = useNavigation();
+  const [step, setStep] = useState(1);
 
   const [name, setName] = useState('');
   const [producer, setProducer] = useState('');
@@ -28,9 +29,7 @@ export default function AddBeerScreen() {
       Alert.alert('Preencha todos os campos obrigatórios.');
       return;
     }
-
-    // Aqui você pode navegar para a próxima etapa ou salvar dados no contexto
-    Alert.alert('Tudo certo!', 'Pronto para ir para a etapa 2.');
+    setStep(2);
   };
 
   return (
@@ -39,68 +38,99 @@ export default function AddBeerScreen() {
       <View style={styles.steps}>
         <View style={styles.stepConnector} />
 
-        {/* Etapa 1 (ativa) */}
+        {/* Etapa 1 */}
         <View style={styles.step}>
-          <View style={[styles.stepCircle, styles.activeStepCircle]}>
-            <Text style={[styles.stepText, styles.activeStepText]}>1</Text>
+          <View style={[
+            styles.stepCircle,
+            step === 1 ? styles.activeStepCircle : styles.inactiveStepCircle,
+          ]}>
+            <Text style={[
+              styles.stepNumber,
+              step === 1 ? styles.activeStepText : styles.inactiveStepText,
+            ]}>1</Text>
           </View>
           <Text style={styles.stepLabel}>Básico</Text>
         </View>
 
-        {/* Etapa 2 (inativa) */}
+        {/* Etapa 2 */}
         <View style={styles.step}>
-          <View style={[styles.stepCircle, styles.inactiveStepCircle]}>
-            <Text style={[styles.stepText, styles.inactiveStepText]}>2</Text>
+          <View style={[
+            styles.stepCircle,
+            step === 2 ? styles.activeStepCircle : styles.inactiveStepCircle,
+          ]}>
+            <Text style={[
+              styles.stepNumber,
+              step === 2 ? styles.activeStepText : styles.inactiveStepText,
+            ]}>2</Text>
           </View>
           <Text style={styles.stepLabel}>Origem</Text>
         </View>
       </View>
 
+      {/* Etapa 1 */}
+      {step === 1 && (
+        <>
+          <Text style={styles.sectionTitle}>Informações básicas</Text>
 
+          <TextInput
+            placeholder="Nome do vinho*"
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+          />
 
-      <Text style={styles.sectionTitle}>Informações básicas</Text>
+          <TextInput
+            placeholder="Produtor*"
+            style={styles.input}
+            value={producer}
+            onChangeText={setProducer}
+          />
 
-      <TextInput
-        placeholder="Nome do vinho*"
-        style={styles.input}
-        value={name}
-        onChangeText={setName}
-      />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={type}
+              onValueChange={(itemValue) => setType(itemValue)}
+            >
+              <Picker.Item label="Selecione um tipo" value="" />
+              {wineTypes.map((w) => (
+                <Picker.Item key={w} label={w} value={w} />
+              ))}
+            </Picker>
+          </View>
 
-      <TextInput
-        placeholder="Produtor*"
-        style={styles.input}
-        value={producer}
-        onChangeText={setProducer}
-      />
+          <TextInput
+            placeholder="Ano/Safra*"
+            style={styles.input}
+            keyboardType="numeric"
+            value={year}
+            onChangeText={setYear}
+          />
 
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={type}
-          onValueChange={(itemValue) => setType(itemValue)}
-        >
-          <Picker.Item label="Selecione um tipo" value="" />
-          {wineTypes.map((w) => (
-            <Picker.Item key={w} label={w} value={w} />
-          ))}
-        </Picker>
-      </View>
+          <TouchableOpacity
+            style={[styles.button, !isFormValid && styles.disabledButton]}
+            onPress={handleNext}
+            disabled={!isFormValid}
+          >
+            <Text style={styles.buttonText}>Próximo</Text>
+          </TouchableOpacity>
+        </>
+      )}
 
-      <TextInput
-        placeholder="Ano/Safra*"
-        style={styles.input}
-        keyboardType="numeric"
-        value={year}
-        onChangeText={setYear}
-      />
+      {/* Etapa 2 */}
+      {step === 2 && (
+        <>
+          <Text style={styles.sectionTitle}>Origem do vinho</Text>
 
-      <TouchableOpacity
-        style={[styles.button, !isFormValid && styles.disabledButton]}
-        onPress={handleNext}
-        disabled={!isFormValid}
-      >
-        <Text style={styles.buttonText}>Próximo</Text>
-      </TouchableOpacity>
+          {/* Aqui você adiciona os campos da etapa 2 */}
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => Alert.alert('Salvo!')}
+          >
+            <Text style={styles.buttonText}>Salvar</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </ScrollView>
   );
 }
@@ -158,12 +188,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
-    paddingHorizontal: 32,
+    paddingHorizontal: 22,
     position: 'relative',
   },
   stepConnector: {
     position: 'absolute',
-    top: 18, // alinhamento visual com o centro dos círculos
+    top: 15, // alinhamento visual com o centro dos círculos
     left: 32,
     right: 32,
     height: 2,
