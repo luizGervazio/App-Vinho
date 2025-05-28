@@ -14,7 +14,8 @@ import { useNavigation } from '@react-navigation/native';
 export default function AddBeerScreen() {
   const navigation = useNavigation();
   const [step, setStep] = useState(1);
-
+  const [country, setCountry] = useState('');
+  const [region, setRegion] = useState('');
   const [name, setName] = useState('');
   const [producer, setProducer] = useState('');
   const [type, setType] = useState('');
@@ -119,18 +120,50 @@ export default function AddBeerScreen() {
       {/* Etapa 2 */}
       {step === 2 && (
         <>
-          <Text style={styles.sectionTitle}>Origem do vinho</Text>
+          <Text style={styles.sectionTitle}>Origem</Text>
 
-          {/* Aqui você adiciona os campos da etapa 2 */}
+          <TextInput
+            placeholder="País*"
+            style={styles.input}
+            value={country}
+            onChangeText={setCountry}
+          />
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => Alert.alert('Salvo!')}
-          >
-            <Text style={styles.buttonText}>Salvar</Text>
-          </TouchableOpacity>
+          <TextInput
+            placeholder="Região*"
+            style={styles.input}
+            value={region}
+            onChangeText={setRegion}
+          />
+
+          <View style={styles.imagePicker}>
+            <View style={styles.imageBox}>
+              <Text style={{ fontSize: 24 }}>🖼️</Text>
+            </View>
+            <TouchableOpacity style={styles.chooseImageButton}>
+              <Text style={styles.chooseImageText}>Escolher imagem</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={styles.outlineButton}
+              onPress={() => setStep(1)}
+            >
+              <Text style={styles.outlineButtonText}>Voltar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button, !country || !region ? styles.disabledButton : null]}
+              onPress={() => Alert.alert('Salvo!')}
+              disabled={!country || !region}
+            >
+              <Text style={styles.buttonText}>Salvar vinho</Text>
+            </TouchableOpacity>
+          </View>
         </>
       )}
+
     </ScrollView>
   );
 }
@@ -230,5 +263,49 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#444',
   },
+  imagePicker: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 24,
+  },
+  imageBox: {
+    width: 60,
+    height: 60,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  chooseImageButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#eee',
+    borderRadius: 6,
+  },
+  chooseImageText: {
+    fontWeight: 'bold',
+    color: '#444',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  outlineButton: {
+    borderWidth: 1,
+    borderColor: '#800020',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 6,
+    flex: 1,
+    alignItems: 'center',
+  },
+  outlineButtonText: {
+    color: '#800020',
+    fontWeight: 'bold',
+  },
+
 });
 
