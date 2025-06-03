@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../routes/Routes';
+import ConfirmDeleteModal from '../../components/modals/ConfirmDeleteModal';
 
 type BeerDetailsRouteProp = RouteProp<RootStackParamList, 'BeerDetails'>;
 
 export default function BeerDetailsScreen() {
+  type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'BeerDetails'>;
+  const navigation = useNavigation<NavigationProp>();
   const route = useRoute<BeerDetailsRouteProp>();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { beer } = route.params;
 
   return (
@@ -67,13 +73,31 @@ export default function BeerDetailsScreen() {
 
       {/* Botões de Ação */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => navigation.navigate('EditBeer', { beer })}
+        >
           <Text style={styles.buttonTextWhite}>Editar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton}>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => setShowDeleteModal(true)}
+        >
           <Text style={styles.buttonText}>Excluir</Text>
         </TouchableOpacity>
       </View>
+
+      <ConfirmDeleteModal
+        visible={showDeleteModal}
+        onCancel={() => setShowDeleteModal(false)}
+        onConfirm={() => {
+          setShowDeleteModal(false);
+          // Aqui pode chamar sua lógica real de remoção
+          alert('Item excluído com sucesso!');
+          navigation.goBack(); // ou redirecione para outra tela
+        }}
+        itemName={beer.name}
+      />
     </ScrollView>
   );
 }

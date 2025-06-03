@@ -8,8 +8,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../views/screens/home/home';
 import AddBeerScreen from '../views/screens/addBeer/addBeer';
 import BeerDetailScreen from '../views/screens/BeerDetails/beerDetails';
+import EditBeerScreen from '../views/screens/editBeer/editBeer';
 
-// ⚠️ Essas telas abaixo ainda não foram criadas, então comente ou crie depois
 // import ExploreScreen from '../views/screens/explore/explore';
 // import LearnScreen from '../views/screens/learn/learn';
 // import WineListScreen from '../views/screens/wineList/wineList';
@@ -21,6 +21,7 @@ export type RootStackParamList = {
   HomeTabs: undefined;
   AddBeer: undefined;
   BeerDetails: { beer: Beer };
+  EditBeer: { beer: Beer };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -50,7 +51,6 @@ function HomeTabs() {
       })}
     >
       <Tab.Screen name="Início" component={HomeScreen} options={{headerTitle:'Minha Adega 🍷',tabBarLabel: 'Início',}}/>
-      {/* Abas futuras que você pode adicionar: */}
       {/* <Tab.Screen name="Adega" component={WineListScreen} /> */}
       {/* <Tab.Screen name="Explorar" component={ExploreScreen} /> */}
       {/* <Tab.Screen name="Aprenda" component={LearnScreen} /> */}
@@ -68,9 +68,22 @@ export default function Routes() {
           component={HomeTabs}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="AddBeer" options={{headerTitle:'Adicionar Vinho'}} component={AddBeerScreen} />
-        <Stack.Screen name="BeerDetails" component={BeerDetailScreen} />
+        <Stack.Screen
+          name="AddBeer"
+          options={{ headerTitle: 'Adicionar Vinho' }}
+          component={AddBeerScreen}
+        />
+        <Stack.Screen
+          name="BeerDetails"
+          component={BeerDetailScreen}
+        />
+        <Stack.Screen
+          name="EditBeer"
+          options={{ headerTitle: 'Editar Vinho' }}
+          component={EditBeerScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
