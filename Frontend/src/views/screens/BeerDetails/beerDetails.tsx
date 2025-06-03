@@ -68,7 +68,7 @@ export default function BeerDetailsScreen() {
       {/* Botões de Ação */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.buttonTextWhite}>Editar</Text>
+          <Text style={styles.buttonTextWhite} >Editar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.deleteButton}>
           <Text style={styles.buttonText}>Excluir</Text>
