@@ -1,11 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../routes/Routes';
 
 type BeerDetailsRouteProp = RouteProp<RootStackParamList, 'BeerDetails'>;
 
 export default function BeerDetailsScreen() {
+  type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'BeerDetails'>;
+  const navigation = useNavigation<NavigationProp>();
   const route = useRoute<BeerDetailsRouteProp>();
   const { beer } = route.params;
 
@@ -67,8 +71,11 @@ export default function BeerDetailsScreen() {
 
       {/* Botões de Ação */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.buttonTextWhite} >Editar</Text>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => navigation.navigate('EditBeer', { beer })}
+        >
+          <Text style={styles.buttonTextWhite}>Editar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.deleteButton}>
           <Text style={styles.buttonText}>Excluir</Text>
