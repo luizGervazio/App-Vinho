@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../views/screens/home/home';
 import AddBeerScreen from '../views/screens/addBeer/addBeer';
 import BeerDetailScreen from '../views/screens/BeerDetails/beerDetails';
+import EditBeerScreen from '../views/screens/editBeer/editBeer';
 
 // import ExploreScreen from '../views/screens/explore/explore';
 // import LearnScreen from '../views/screens/learn/learn';
@@ -20,6 +21,7 @@ export type RootStackParamList = {
   HomeTabs: undefined;
   AddBeer: undefined;
   BeerDetails: { beer: Beer };
+  EditBeer: { beer: Beer };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -66,9 +68,22 @@ export default function Routes() {
           component={HomeTabs}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="AddBeer" options={{headerTitle:'Adicionar Vinho'}} component={AddBeerScreen} />
-        <Stack.Screen name="BeerDetails" component={BeerDetailScreen} />
+        <Stack.Screen
+          name="AddBeer"
+          options={{ headerTitle: 'Adicionar Vinho' }}
+          component={AddBeerScreen}
+        />
+        <Stack.Screen
+          name="BeerDetails"
+          component={BeerDetailScreen}
+        />
+        <Stack.Screen
+          name="EditBeer"
+          options={{ headerTitle: 'Editar Vinho' }}
+          component={EditBeerScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
