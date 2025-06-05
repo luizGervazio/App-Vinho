@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../routes/Routes';
 import ConfirmDeleteModal from '../../components/modals/ConfirmDeleteModal';
+import { deleteWine } from '../../../api/wineService';
 
 type BeerDetailsRouteProp = RouteProp<RootStackParamList, 'BeerDetails'>;
 
@@ -15,8 +15,21 @@ export default function BeerDetailsScreen() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { beer } = route.params;
 
+  const handleDelete = async () => {
+    try {
+      await deleteWine(beer.id);
+      Alert.alert('Sucesso', 'Vinho excluído com sucesso!');
+      setShowDeleteModal(false);
+      navigation.goBack();
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Erro', 'Erro ao excluir o vinho.');
+      setShowDeleteModal(false);
+    }
+  };
+
   return (
-    <ScrollView style={styles.container }contentContainerStyle={styles.scrollContent}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <Text style={styles.title}>{beer.name}</Text>
       <Text style={styles.subTitle}>
         {beer.type} • {beer.year} • {beer.country}
@@ -33,18 +46,18 @@ export default function BeerDetailsScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Região</Text>
-        <Text>{beer.region || '—'}</Text>
+        <Text>{beer.country || '—'}</Text>
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Uvas</Text>
-        <Text>{beer.grapes || '—'}</Text>
+        <Text>{beer.grapeType || '—'}</Text>
       </View>
 
       <View style={styles.sectionRow}>
         <View style={{ flex: 1 }}>
           <Text style={styles.sectionTitle}>Álcool</Text>
-          <Text>{beer.alcohol || '—'}</Text>
+          <Text>{beer.alcoholPercentage || '—'}</Text>
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.sectionTitle}>Preço</Text>
@@ -57,10 +70,7 @@ export default function BeerDetailsScreen() {
         <Text>{beer.description || 'Sem descrição.'}</Text>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Notas de Degustação</Text>
-        <Text>{beer.notes || '—'}</Text>
-      </View>
+
 
       {beer.pairing && (
         <View style={styles.section}>
@@ -90,12 +100,8 @@ export default function BeerDetailsScreen() {
       <ConfirmDeleteModal
         visible={showDeleteModal}
         onCancel={() => setShowDeleteModal(false)}
-        onConfirm={() => {
-          setShowDeleteModal(false);
-          // Aqui pode chamar sua lógica real de remoção
-          alert('Item excluído com sucesso!');
-          navigation.goBack(); // ou redirecione para outra tela
-        }}
+        itemId={beer.id}
+        onConfirm={handleDelete}
         itemName={beer.name}
       />
     </ScrollView>
@@ -138,8 +144,7 @@ const styles = StyleSheet.create({
     color: '#800020',
     fontWeight: 'bold',
   },
-    scrollContent: {
-    paddingBottom: 80, // ou mais, se necessário para garantir espaço pro botão
-  },  
-
+  scrollContent: {
+    paddingBottom: 80,
+  },
 });

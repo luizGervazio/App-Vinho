@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
+import { createWine } from '../../../api/wineService';
 
 export default function AddBeerScreen() {
   const navigation = useNavigation();
@@ -32,6 +33,35 @@ export default function AddBeerScreen() {
     }
     setStep(2);
   };
+
+  const handleSave = async () => {
+  if (!country || !region) {
+    Alert.alert('Preencha os campos obrigatórios da origem.');
+    return;
+  }
+
+  const newWine = {
+    name,
+    producer,
+    type,
+    year: parseInt(year), // ✅ converte para number
+    country,
+    region,
+    grapeType: 'Uva padrão',
+    alcoholPercentage: 12.5,
+    price: 100,
+    description: 'Sem descrição',
+  };
+
+  try {
+    await createWine(newWine);
+    Alert.alert('Sucesso', 'Vinho adicionado com sucesso!');
+    navigation.goBack(); // Volta para a tela anterior (Home)
+  } catch (error) {
+    Alert.alert('Erro', 'Erro ao adicionar o vinho.');
+  }
+};
+
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -155,7 +185,7 @@ export default function AddBeerScreen() {
 
             <TouchableOpacity
               style={[styles.button, !country || !region ? styles.disabledButton : null]}
-              onPress={() => Alert.alert('Salvo!')}
+              onPress={handleSave}
               disabled={!country || !region}
             >
               <Text style={styles.buttonText}>Salvar vinho</Text>

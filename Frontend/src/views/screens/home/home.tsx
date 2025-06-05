@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,16 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../routes/Routes';
-
+import { getAllWines } from '../../../api/wineService';
+import BeerCard from '../../components/card/BeerCard';
 
 export default function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [wines, setWines] = useState([]);
+
+  useEffect(() => {
+    getAllWines().then(setWines);
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -39,49 +45,15 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Card mockado */}
-      <TouchableOpacity
-  onPress={() =>
-    navigation.navigate('BeerDetails', {
-            beer: {
-                id: 'mock1',
-                name: 'Château Margaux',
-                type: 'Tinto',
-                year: '2015',
-                country: 'França',
-                region: 'Bordeaux',
-                grapes: 'Cabernet Sauvignon, Merlot, Petit Verdot, Cabernet Franc',
-                alcohol: '13.5%',
-                price: 'R$ 950,00',
-                rating: 4.9,
-                description:
-                'Um vinho Premier Cru Classé de Bordeaux, conhecido por sua elegância e complexidade.',
-                notes:
-                'Aromas de frutas negras, violetas e cedro, com taninos sedosos e final persistente.',
-                pairing: ['Carnes vermelhas', 'Cordeiro', 'Queijos maduros'],
-            },
-            })
-        }
+      {/* Lista dinâmica de vinhos */}
+      {wines.map((beer: any) => (
+        <TouchableOpacity
+          key={beer.id}
+          onPress={() => navigation.navigate('BeerDetails', { beer })}
         >
-        <View style={styles.card}>
-            <View style={styles.cardTop}>
-            <Image
-                source={{
-                uri: 'https://upload.wikimedia.org/wikipedia/en/5/5f/Chateau_Margaux.jpg',
-                }}
-                style={styles.image}
-            />
-            <Text style={styles.star}>⭐</Text>
-            </View>
-            <Text style={styles.cardTitle}>Château Margaux</Text>
-            <Text style={styles.cardSub}>Bordeaux, França</Text>
-            <View style={styles.cardDetails}>
-            <Text style={styles.tag}>Tinto</Text>
-            <Text style={styles.year}>2015</Text>
-            </View>
-            <Text style={styles.rating}>⭐ 4.9</Text>
-        </View>
+          <BeerCard beer={beer} />
         </TouchableOpacity>
+      ))}
     </ScrollView>
   );
 }
