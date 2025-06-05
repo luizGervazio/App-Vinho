@@ -9,35 +9,70 @@ import {
   Alert,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../../routes/Routes';
+import { updateWine } from '../../../api/wineService';
 
 type EditBeerRouteProp = RouteProp<RootStackParamList, 'EditBeer'>;
 
 export default function EditBeerScreen() {
   const route = useRoute<EditBeerRouteProp>();
   const { beer } = route.params;
+  const navigation = useNavigation();
 
   const [name, setName] = useState(beer.name || '');
   const [producer, setProducer] = useState(beer.producer || '');
   const [type, setType] = useState(beer.type || '');
-  const [year, setYear] = useState(beer.year || '');
+  const [year, setYear] = useState(String(beer.year) || '');
   const [country, setCountry] = useState(beer.country || '');
   const [region, setRegion] = useState(beer.region || '');
+  const [price, setPrice] = useState(String(beer.price) || '');
+  const [grapeType, setGrapeType] = useState(beer.grapeType || '');
+  const [alcoholPercentage, setAlcoholPercentage] = useState(String(beer.alcoholPercentage) || '');
+  const [description, setDescription] = useState(beer.description || '');
 
   const beerTypes = ['Pilsen', 'IPA', 'Stout', 'Weiss', 'Lager', 'Ale'];
 
-  const isFormValid = name && producer && type && year && country && region;
+  const isFormValid =
+    name && producer && type && year && country && region &&
+    price && grapeType && alcoholPercentage && description;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!isFormValid) {
       Alert.alert('Preencha todos os campos obrigatórios.');
       return;
     }
 
-    // Aqui você pode fazer a lógica de salvamento (ex: chamada API, update local etc)
-    Alert.alert('Cerveja editada com sucesso!');
+    const yearNumber = Number(year);
+    const priceNumber = Number(price);
+    const alcoholNumber = Number(alcoholPercentage);
+
+    if (isNaN(yearNumber) || isNaN(priceNumber) || isNaN(alcoholNumber)) {
+      Alert.alert('Erro', 'Ano, preço e teor alcoólico devem ser números válidos.');
+      return;
+    }
+
+    const updatedWine = {
+      name,
+      producer,
+      type,
+      year: yearNumber,
+      country,
+      price: priceNumber,
+      grapeType,
+      alcoholPercentage: alcoholNumber,
+      description,
+    };
+
+    try {
+      await updateWine(beer.id, updatedWine);
+      Alert.alert('Sucesso', 'Vinho atualizado com sucesso!');
+      navigation.goBack();
+    } catch (error) {
+      console.error('Erro ao atualizar:', error);
+      Alert.alert('Erro', 'Erro ao atualizar o vinho.');
+    }
   };
 
   return (
@@ -90,6 +125,37 @@ export default function EditBeerScreen() {
         style={styles.input}
         value={region}
         onChangeText={setRegion}
+      />
+
+      <TextInput
+        placeholder="Preço*"
+        style={styles.input}
+        keyboardType="numeric"
+        value={price}
+        onChangeText={setPrice}
+      />
+
+      <TextInput
+        placeholder="Tipo da uva*"
+        style={styles.input}
+        value={grapeType}
+        onChangeText={setGrapeType}
+      />
+
+      <TextInput
+        placeholder="Teor alcoólico (%)*"
+        style={styles.input}
+        keyboardType="numeric"
+        value={alcoholPercentage}
+        onChangeText={setAlcoholPercentage}
+      />
+
+      <TextInput
+        placeholder="Descrição*"
+        style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
+        multiline
+        value={description}
+        onChangeText={setDescription}
       />
 
       <View style={styles.imagePicker}>

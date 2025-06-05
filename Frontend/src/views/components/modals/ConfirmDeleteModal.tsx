@@ -5,21 +5,36 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
+import { deleteWine } from '../../../api/wineService';
 
 interface Props {
   visible: boolean;
   onCancel: () => void;
-  onConfirm: () => void;
+  itemId: number;         // 👈 Novo: ID do item
   itemName?: string;
+  onSuccess?: () => void; // 👈 Opcional: callback após sucesso
 }
 
 export default function ConfirmDeleteModal({
   visible,
   onCancel,
-  onConfirm,
+  itemId,
   itemName = 'este item',
+  onSuccess,
 }: Props) {
+  const handleDelete = async () => {
+    try {
+      await deleteWine(itemId);
+      Alert.alert('Sucesso', 'Item excluído com sucesso!');
+      onCancel();       // fecha o modal
+      onSuccess?.();    // chama o callback, se existir (ex: navegar de volta)
+    } catch (error) {
+      Alert.alert('Erro', 'Erro ao excluir o item.');
+    }
+  };
+
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
       <View style={styles.overlay}>
@@ -30,7 +45,7 @@ export default function ConfirmDeleteModal({
             <TouchableOpacity onPress={onCancel} style={styles.cancelButton}>
               <Text style={styles.cancelText}>Cancelar</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={onConfirm} style={styles.confirmButton}>
+            <TouchableOpacity onPress={handleDelete} style={styles.confirmButton}>
               <Text style={styles.confirmText}>Excluir</Text>
             </TouchableOpacity>
           </View>
